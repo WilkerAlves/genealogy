@@ -51,6 +51,7 @@ func configureRoutes() *gin.Engine {
 	routerGroup := router.Group("/persons")
 	routerGroup.GET("/:id", controllers.GetPerson)
 	routerGroup.GET("/", controllers.GetPersons)
+	routerGroup.POST("/", controllers.CreatePerson)
 	routerGroup.PUT("/:id", controllers.UpdatePerson)
 	routerGroup.DELETE("/:id", controllers.DeletePerson)
 
