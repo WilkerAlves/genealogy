@@ -10,11 +10,11 @@ import (
 )
 
 type PersonRepository struct {
-	DB *sql.DB
+	db *sql.DB
 }
 
 func (r *PersonRepository) Add(ctx context.Context, name string) (*entity.Person, error) {
-	stmt, err := r.DB.PrepareContext(ctx, "INSERT INTO person(name) VALUES (?)")
+	stmt, err := r.db.PrepareContext(ctx, "INSERT INTO persons(name) VALUES (?)")
 	if err != nil {
 		return nil, errors.New("error while prepare insert person query")
 	}
@@ -44,11 +44,11 @@ func (r *PersonRepository) Get(ctx context.Context, id int) (*entity.Person, err
 		idDB   int64
 	)
 
-	row := r.DB.QueryRowContext(ctx, "select id, name from person where id = ?", id)
+	row := r.db.QueryRowContext(ctx, "select id, name from persons where id = ?", id)
 
 	err := row.Scan(
-		&person.Name,
 		&idDB,
+		&person.Name,
 	)
 
 	if err != nil {
@@ -64,7 +64,7 @@ func (r *PersonRepository) Get(ctx context.Context, id int) (*entity.Person, err
 }
 
 func (r *PersonRepository) Update(ctx context.Context, id int, name string) error {
-	stmt, err := r.DB.PrepareContext(ctx, "UPDATE person SET name = ? WHERE id = ?")
+	stmt, err := r.db.PrepareContext(ctx, "UPDATE persons SET name = ? WHERE id = ?")
 	if err != nil {
 		return errors.New("error while prepare update person query")
 	}
@@ -81,7 +81,7 @@ func (r *PersonRepository) Update(ctx context.Context, id int, name string) erro
 }
 
 func (r *PersonRepository) Delete(ctx context.Context, id int) error {
-	stmt, err := r.DB.PrepareContext(ctx, "DELETE FROM person WHERE id = ?")
+	stmt, err := r.db.PrepareContext(ctx, "DELETE FROM persons WHERE id = ?")
 	if err != nil {
 		return errors.New("error while prepare delete person query")
 	}
@@ -104,5 +104,5 @@ func NewPersonRepository(connectionString string) (*PersonRepository, error) {
 		return nil, err
 	}
 
-	return &PersonRepository{DB: configureDb}, nil
+	return &PersonRepository{db: configureDb}, nil
 }

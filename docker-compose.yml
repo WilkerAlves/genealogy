@@ -1,0 +1,18 @@
+version: "3.4"
+services:
+#  genealogy:
+#    container_name: genealogy
+#    build:
+#      context: .
+#      dockerfile: docker/go/dev.dockerfile
+#    ports:
+#      - "60013:60013"
+#    volumes:
+#      - ".:/application"
+  genealogy-db:
+    image: mysql:8-debian
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: genealogy
