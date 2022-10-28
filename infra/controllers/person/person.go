@@ -27,7 +27,7 @@ func Create(c *gin.Context) {
 	if err := c.BindJSON(&body); err != nil {
 		msg := fmt.Errorf("error while parser json: %w", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
 	}
 
@@ -36,8 +36,9 @@ func Create(c *gin.Context) {
 	if err != nil {
 		msg := fmt.Errorf("error for create person: %w", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -51,8 +52,9 @@ func FindById(c *gin.Context) {
 	if err != nil {
 		msg := fmt.Errorf("invalid id: %w", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
+		return
 	}
 
 	uc := person.NewFindPersonByIdUseCase(repo)
@@ -63,11 +65,13 @@ func FindById(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": notFoundMsg,
 			})
+			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -81,16 +85,18 @@ func Update(c *gin.Context) {
 	if err != nil {
 		msg := fmt.Errorf("invalid id: %w", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
+		return
 	}
 
 	var body CreateOrUpdatePerson
 	if err := c.BindJSON(&body); err != nil {
 		msg := fmt.Errorf("error while parser json: %w", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
+		return
 	}
 
 	uc := person.NewUpdatePersonUseCase(repo)
@@ -101,11 +107,13 @@ func Update(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": notFoundMsg,
 			})
+			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, nil)
@@ -116,8 +124,9 @@ func Delete(c *gin.Context) {
 	if err != nil {
 		msg := fmt.Errorf("invalid id: %w", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg,
+			"message": msg.Error(),
 		})
+		return
 	}
 
 	uc := person.NewDeletePersonUseCase(repo)
@@ -128,11 +137,13 @@ func Delete(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"message": notFoundMsg,
 			})
+			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, nil)
 }

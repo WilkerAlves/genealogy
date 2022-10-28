@@ -2,17 +2,38 @@ package person_test
 
 import (
 	"context"
+	"errors"
+	"os"
+	"path"
+	"strings"
 	"testing"
 
 	"github.com/WilkerAlves/genealogy/domain/entity"
-	repo "github.com/WilkerAlves/genealogy/domain/repository"
 	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/WilkerAlves/genealogy/use_case/person"
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
-func creteUsers(ctx context.Context, r repo.PersonRepository, name string) (*entity.Person, error) {
-	add, err := r.Add(ctx, name)
+func init() {
+	rootPath := os.Getenv("ROOT_PATH")
+	if len(strings.Trim(rootPath, " ")) > 0 {
+		err := godotenv.Load(path.Join(rootPath, ".env"))
+		if err != nil {
+			panic(errors.New("error while load env"))
+		}
+		personRepository, err = repository.NewPersonRepository(os.Getenv("CONNECTION_STRING_DB"))
+		if err != nil {
+			panic(errors.New("error create repository"))
+		}
+
+	} else {
+		personRepository = new(repository.PersonRepositoryMemory)
+	}
+}
+
+func creteUsers(ctx context.Context, name string) (*entity.Person, error) {
+	add, err := personRepository.Add(ctx, name)
 	if err != nil {
 		return nil, err
 	}
@@ -22,39 +43,38 @@ func creteUsers(ctx context.Context, r repo.PersonRepository, name string) (*ent
 
 func TestUpdatePerson(t *testing.T) {
 	ctx := context.Background()
-	r := new(repository.PersonRepositoryMemory)
 
-	person1, err := creteUsers(ctx, r, "Bruce")
+	person1, err := creteUsers(ctx, "Bruce")
 	if err != nil {
 		return
 	}
 
-	_, err = creteUsers(ctx, r, "Mike")
+	_, err = creteUsers(ctx, "Mike")
 	if err != nil {
 		return
 	}
 
 	newName := "NOVO NOME"
-	uc := person.NewUpdatePersonUseCase(r)
+	uc := person.NewUpdatePersonUseCase(personRepository)
 	err = uc.Execute(ctx, person1.ID, newName)
 	assert.Nil(t, err)
 
-	p, err := r.Get(ctx, person1.ID)
+	p, err := personRepository.Get(ctx, person1.ID)
 	assert.Nil(t, err)
 
-	assert.Equal(t, p.Name, person1.Name)
+	assert.Equal(t, newName, p.Name)
 }
 
 func TestUpdatePersonWithInvalidName(t *testing.T) {
 	ctx := context.Background()
 	r := new(repository.PersonRepositoryMemory)
 
-	person1, err := creteUsers(ctx, r, "Bruce")
+	person1, err := creteUsers(ctx, "Bruce")
 	if err != nil {
 		return
 	}
 
-	_, err = creteUsers(ctx, r, "Mike")
+	_, err = creteUsers(ctx, "Mike")
 	if err != nil {
 		return
 	}
@@ -69,14 +89,12 @@ func TestUpdatePersonWithInvalidName(t *testing.T) {
 
 func TestUpdatePersonWithInvalidId(t *testing.T) {
 	ctx := context.Background()
-	r := new(repository.PersonRepositoryMemory)
-
-	_, err := creteUsers(ctx, r, "Bruce")
+	_, err := creteUsers(ctx, "Bruce")
 	if err != nil {
 		return
 	}
 
-	_, err = creteUsers(ctx, r, "Mike")
+	_, err = creteUsers(ctx, "Mike")
 	if err != nil {
 		return
 	}

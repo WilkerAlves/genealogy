@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 
 	"github.com/WilkerAlves/genealogy/domain/entity"
@@ -16,7 +15,7 @@ type PersonRepository struct {
 func (r *PersonRepository) Add(ctx context.Context, name string) (*entity.Person, error) {
 	stmt, err := r.db.PrepareContext(ctx, "INSERT INTO persons(name) VALUES (?)")
 	if err != nil {
-		return nil, errors.New("error while prepare insert person query")
+		return nil, fmt.Errorf("error while prepare insert person query. %w", err)
 	}
 	defer stmt.Close()
 	var args []interface{}
@@ -66,7 +65,7 @@ func (r *PersonRepository) Get(ctx context.Context, id int) (*entity.Person, err
 func (r *PersonRepository) Update(ctx context.Context, id int, name string) error {
 	stmt, err := r.db.PrepareContext(ctx, "UPDATE persons SET name = ? WHERE id = ?")
 	if err != nil {
-		return errors.New("error while prepare update person query")
+		return fmt.Errorf("error while prepare update person query: %w", err)
 	}
 	defer stmt.Close()
 	var args []interface{}
@@ -83,7 +82,7 @@ func (r *PersonRepository) Update(ctx context.Context, id int, name string) erro
 func (r *PersonRepository) Delete(ctx context.Context, id int) error {
 	stmt, err := r.db.PrepareContext(ctx, "DELETE FROM persons WHERE id = ?")
 	if err != nil {
-		return errors.New("error while prepare delete person query")
+		return fmt.Errorf("error while prepare delete person query: %w", err)
 	}
 	defer stmt.Close()
 	var args []interface{}

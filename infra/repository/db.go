@@ -15,10 +15,10 @@ var (
 )
 
 func ConfigureDb(connectionString string) (*sql.DB, error) {
-	mu.Lock()
-	defer mu.Unlock()
-
 	if db == nil {
+		mu.Lock()
+		defer mu.Unlock()
+
 		var err error
 
 		db, err = sql.Open("mysql", connectionString)
