@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/WilkerAlves/genealogy/infra/controllers"
+	"github.com/WilkerAlves/genealogy/infra/controllers/person"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -49,11 +49,10 @@ func configureRoutes() *gin.Engine {
 	})
 
 	routerGroup := router.Group("/persons")
-	routerGroup.GET("/:id", controllers.GetPerson)
-	routerGroup.GET("/", controllers.GetPersons)
-	routerGroup.POST("/", controllers.CreatePerson)
-	routerGroup.PUT("/:id", controllers.UpdatePerson)
-	routerGroup.DELETE("/:id", controllers.DeletePerson)
+	routerGroup.GET("/:id", person.FindById)
+	routerGroup.POST("/", person.Create)
+	routerGroup.PUT("/:id", person.Update)
+	routerGroup.DELETE("/:id", person.Delete)
 
 	return router
 }
