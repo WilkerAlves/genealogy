@@ -1,18 +1,18 @@
 version: "3.4"
 services:
-  genealogy-go:
-    container_name: genealogy_go
-    build:
-      context: .
-      dockerfile: docker/go/dev.dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - genealogy-db
-    volumes:
-      - ".:/application"
-    environment:
-      CONNECTION_STRING_DB: 'MainUser:MainPassword@tcp(genealogy-db:3306)/genealogy'
+#  genealogy-go:
+#    container_name: genealogy_go
+#    build:
+#      context: .
+#      dockerfile: docker/go/dev.dockerfile
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - genealogy-db
+#    volumes:
+#      - ".:/application"
+#    environment:
+#      CONNECTION_STRING_DB: 'MainUser:MainPassword@tcp(genealogy-db:3306)/genealogy'
   genealogy-db:
     image: mysql:latest
     networks:
