@@ -23,3 +23,7 @@ func (uc *AddUseCase) Execute(ctx context.Context, input InputRelationship) erro
 
 	return nil
 }
+
+func NewAddUseCase(repo repository.RelationshipRepository) *AddUseCase {
+	return &AddUseCase{repo: repo}
+}

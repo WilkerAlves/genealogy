@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/WilkerAlves/genealogy/infra/controllers/person"
+	"github.com/WilkerAlves/genealogy/infra/controllers/relationship"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -53,6 +54,10 @@ func configureRoutes() *gin.Engine {
 	routerGroup.POST("/", person.Create)
 	routerGroup.PUT("/:id", person.Update)
 	routerGroup.DELETE("/:id", person.Delete)
+
+	relationshipGroup := router.Group("/relationship")
+	relationshipGroup.GET("/:id", relationship.Genealogy)
+	relationshipGroup.POST("/", relationship.Add)
 
 	return router
 }

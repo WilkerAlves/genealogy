@@ -54,7 +54,7 @@ func (r *PersonRepository) Get(ctx context.Context, id int) (*entity.Person, err
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("person %d not found", id)
 		}
-		return nil, fmt.Errorf("can't scan person '%d' result row of first class: %w", id, err)
+		return nil, fmt.Errorf("can't scan person '%d': %w", id, err)
 	}
 
 	person.ID = int(idDB)

@@ -9,5 +9,5 @@ import (
 type RelationshipRepository interface {
 	Add(ctx context.Context, idParent, idChildren int) error
 	GetParents(ctx context.Context, idChildren int) ([]*entity.Person, error)
-	GetChild(ctx context.Context, idParent int) ([]*entity.Person, error)
+	GetChildren(ctx context.Context, idParent int) ([]*entity.Person, error)
 }
