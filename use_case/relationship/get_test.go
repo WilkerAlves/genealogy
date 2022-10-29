@@ -7,14 +7,11 @@ import (
 	"path"
 	"testing"
 
-	domainRepo "github.com/WilkerAlves/genealogy/domain/repository"
 	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/WilkerAlves/genealogy/use_case/relationship"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
-
-var relationshipRepository domainRepo.RelationshipRepository
 
 func init() {
 	rootPath := os.Getenv("ROOT_PATH")
@@ -28,10 +25,9 @@ func init() {
 	}
 }
 
-func TestFindUseCase_Execute(t *testing.T) {
-	uc := relationship.NewFindUseCase(relationshipRepository)
-	id := 6
-	family, err := uc.Execute(context.Background(), id)
+func TestGetExecute(t *testing.T) {
+	uc := relationship.NewGetUseCase(relationshipRepository)
+	family, err := uc.Execute(context.Background(), 5, 13)
 	assert.Nil(t, err)
 	assert.NotNil(t, family)
 }

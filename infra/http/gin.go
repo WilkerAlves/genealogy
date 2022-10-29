@@ -58,6 +58,7 @@ func configureRoutes() *gin.Engine {
 	relationshipGroup := router.Group("/relationship")
 	relationshipGroup.GET("/:id", relationship.Genealogy)
 	relationshipGroup.POST("/", relationship.Add)
+	relationshipGroup.GET("/find", relationship.Find)
 
 	return router
 }

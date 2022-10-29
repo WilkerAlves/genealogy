@@ -72,3 +72,37 @@ func Genealogy(c *gin.Context) {
 
 	c.JSON(http.StatusOK, result)
 }
+
+func Find(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		msg := fmt.Errorf("invalid id: %w", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": msg.Error(),
+		})
+		return
+	}
+
+	findrelationship, err := strconv.Atoi(c.Query("findrelationship"))
+	if err != nil {
+		msg := fmt.Errorf("invalid id: %w", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": msg.Error(),
+		})
+		return
+	}
+
+	uc := relationship.NewGetUseCase(repo)
+	result, err := uc.Execute(c.Request.Context(), id, findrelationship)
+	if err != nil {
+		msg := fmt.Errorf("error while get genealogy: %w", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": msg.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": result,
+	})
+}
