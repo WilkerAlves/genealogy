@@ -1,11 +1,9 @@
 package relationship
 
 import (
-	"strconv"
-
+	"github.com/WilkerAlves/genealogy/application/relationship"
 	"github.com/WilkerAlves/genealogy/infra/controllers"
 	"github.com/WilkerAlves/genealogy/infra/repository"
-	"github.com/WilkerAlves/genealogy/use_case/relationship"
 	"github.com/gin-gonic/gin"
 )
 
@@ -64,13 +62,13 @@ func (ctrl *Controller) Genealogy(c *gin.Context) {
 }
 
 func (ctrl *Controller) Find(c *gin.Context) {
-	id, err := controllers.ValidateId(c.Param("id"))
+	id, err := controllers.ValidateId(c.Query("id"))
 	if err != nil {
 		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	findRelationship, err := strconv.Atoi(c.Query("findrelationship"))
+	findRelationship, err := controllers.ValidateId(c.Query("findrelationship"))
 	if err != nil {
 		controllers.ResponseBadRequest(c, "", err)
 		return

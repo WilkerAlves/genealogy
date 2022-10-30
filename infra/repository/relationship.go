@@ -37,11 +37,11 @@ func (r *RelationshipRepository) GetParents(ctx context.Context, id int) ([]*ent
 		id,
 	)
 
-	defer rows.Close()
-
 	if err != nil {
 		return nil, fmt.Errorf("error wihile get parents query. %w", err)
 	}
+
+	defer rows.Close()
 
 	parents := make([]*entity.Person, 0)
 	for rows.Next() {
@@ -72,11 +72,11 @@ func (r *RelationshipRepository) GetChildren(ctx context.Context, id int) ([]*en
 		id,
 	)
 
-	defer rows.Close()
-
 	if err != nil {
 		return nil, fmt.Errorf("error wihile get children query. %w", err)
 	}
+
+	defer rows.Close()
 
 	children := make([]*entity.Person, 0)
 	for rows.Next() {

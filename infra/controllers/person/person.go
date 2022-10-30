@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/WilkerAlves/genealogy/application/person"
 	"github.com/WilkerAlves/genealogy/infra/controllers"
 	"github.com/WilkerAlves/genealogy/infra/repository"
-	"github.com/WilkerAlves/genealogy/use_case/person"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,7 +43,7 @@ func (ctrl *Controller) FindById(c *gin.Context) {
 	if err != nil {
 		notFoundMsg := fmt.Sprintf("person %d not found", id)
 		if err.Error() == notFoundMsg {
-			controllers.ResponseNotFound(c, notFoundMsg)
+			controllers.ResponseNotFound(c, "person not found")
 			return
 		}
 

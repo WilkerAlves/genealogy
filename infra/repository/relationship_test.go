@@ -7,8 +7,8 @@ import (
 	"path"
 	"testing"
 
+	"github.com/WilkerAlves/genealogy/application/relationship"
 	"github.com/WilkerAlves/genealogy/infra/repository"
-	"github.com/WilkerAlves/genealogy/use_case/relationship"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
