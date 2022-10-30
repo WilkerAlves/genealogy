@@ -9,54 +9,55 @@ DROP TABLE IF EXISTS persons;
 CREATE TABLE `persons`
 (
     `id`   int         NOT NULL AUTO_INCREMENT,
-    `name` varchar(50) NOT NULL,
+    `name` varchar(256) NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO genealogy.persons (id, name)
-VALUES (5, 'Bruce');
+VALUES (1, 'Bruce');
 INSERT INTO genealogy.persons (id, name)
-VALUES (6, 'Mike');
+VALUES (2, 'Mike');
 INSERT INTO genealogy.persons (id, name)
-VALUES (7, 'Sonny');
+VALUES (3, 'Sonny');
 INSERT INTO genealogy.persons (id, name)
-VALUES (8, 'Phoebe');
+VALUES (4, 'Phoebe');
 INSERT INTO genealogy.persons (id, name)
-VALUES (9, 'Anastasia');
+VALUES (5, 'Anastasia');
 INSERT INTO genealogy.persons (id, name)
-VALUES (10, 'Martin');
+VALUES (6, 'Martin');
 INSERT INTO genealogy.persons (id, name)
-VALUES (11, 'Dunny');
+VALUES (7, 'Dunny');
 INSERT INTO genealogy.persons (id, name)
-VALUES (12, 'Úrsula');
+VALUES (8, 'Ursula');
 INSERT INTO genealogy.persons (id, name)
-VALUES (13, 'Jacqueline');
+VALUES (9, 'Jacqueline');
 
 DROP TABLE IF EXISTS relationships;
 
 CREATE TABLE `relationships`
 (
     `parent`   int NOT NULL,
-    `children` int NOT NULL
+    `children` int NOT NULL,
+    PRIMARY KEY (`parent`, `children`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (6, 5);
+VALUES (2, 1);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (6, 11);
+VALUES (2, 7);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (7, 6);
+VALUES (3, 2);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (8, 5);
+VALUES (4, 1);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (8, 11);
+VALUES (4, 7);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (9, 8);
+VALUES (5, 4);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (9, 12);
+VALUES (5, 8);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (10, 8);
+VALUES (6, 4);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (10, 12);
+VALUES (6, 8);
 INSERT INTO genealogy.relationships (parent, children)
-VALUES (12, 13);
+VALUES (8, 9);
