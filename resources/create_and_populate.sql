@@ -1,9 +1,17 @@
+DROP DATABASE IF EXISTS genealogy;
+
+CREATE DATABASE genealogy;
+
+USE genealogy;
+
+DROP TABLE IF EXISTS persons;
+
 CREATE TABLE `persons`
 (
     `id`   int         NOT NULL AUTO_INCREMENT,
     `name` varchar(50) NOT NULL,
     PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 INSERT INTO genealogy.persons (id, name)
 VALUES (5, 'Bruce');
@@ -24,6 +32,7 @@ VALUES (12, 'Úrsula');
 INSERT INTO genealogy.persons (id, name)
 VALUES (13, 'Jacqueline');
 
+DROP TABLE IF EXISTS relationships;
 
 CREATE TABLE `relationships`
 (
