@@ -28,21 +28,16 @@ func genealogy(ctx context.Context, id int, relationshipRepository repository.Re
 	}
 
 	mapParents := make(map[int]string)
-	if len(parents) > 0 {
-		for i := range parents {
-			family.Parents = append(family.Parents, parents[i])
-			mapParents[parents[i].ID] = parents[i].Name
-		}
+	for i := range parents {
+		family.Parents = append(family.Parents, parents[i])
+		mapParents[parents[i].ID] = parents[i].Name
 	}
 
 	children, err := relationshipRepository.GetChildren(ctx, id)
 	if err != nil {
 		return nil, err
 	}
-
-	if len(children) > 0 {
-		family.Children = children
-	}
+	family.Children = children
 
 	allparents := make(map[int][]*entity.Person)
 	for i := range parents {
@@ -59,7 +54,7 @@ func genealogy(ctx context.Context, id int, relationshipRepository repository.Re
 	}
 
 	for i := range children {
-		c, err := relationshipRepository.GetChildren(ctx, family.Parents[i].ID)
+		c, err := relationshipRepository.GetChildren(ctx, family.Children[i].ID)
 		if err != nil {
 			return nil, err
 		}
