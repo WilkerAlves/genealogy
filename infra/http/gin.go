@@ -40,6 +40,19 @@ func StartServer(ctx context.Context) {
 
 }
 
+func getConnectionString() string {
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASS")
+	dbName := os.Getenv("DB_NAME")
+
+	return fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		user, password, host, port, dbName,
+	)
+}
+
 func configureRoutes() *gin.Engine {
 	router := gin.New()
 
@@ -49,7 +62,7 @@ func configureRoutes() *gin.Engine {
 		})
 	})
 
-	conn := os.Getenv("CONNECTION_STRING_DB")
+	conn := getConnectionString()
 
 	personRepository, err := repository.NewPersonRepository(conn)
 	if err != nil {

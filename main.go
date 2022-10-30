@@ -17,7 +17,11 @@ func init() {
 		log.Fatal().Msg("Environment variable not defined")
 	}
 	envProps := []string{
-		"CONNECTION_STRING_DB",
+		"DB_HOST",
+		"DB_PORT",
+		"DB_NAME",
+		"DB_USER",
+		"DB_PASS",
 		"SERVER_PORT",
 	}
 	for _, k := range envProps {

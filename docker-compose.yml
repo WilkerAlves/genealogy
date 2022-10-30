@@ -1,5 +1,19 @@
 version: "3.4"
 services:
+  genealogy-db:
+    container_name: genealogy_db
+    image: 'mysql:latest'
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: genealogy
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: MainUser
+      MYSQL_PASSWORD: MainPassword
+      DATABASE_HOST: genealogy-db
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+
   genealogy-go:
     container_name: genealogy_go
     build:
@@ -9,22 +23,13 @@ services:
       - "8080:8080"
     depends_on:
       - genealogy-db
+    links:
+      - genealogy-db
+    environment:
+      DB_HOST: genealogy-db
+      DB_PORT: 3306
+      DB_NAME: genealogy
+      DB_USER: MainUser
+      DB_PASS: MainPassword
     volumes:
       - ".:/application"
-    environment:
-      CONNECTION_STRING_DB: 'MainUser:MainPassword@tcp(genealogy-db:3306)/genealogy'
-  genealogy-db:
-    container_name: genealogy_db
-    build:
-      context: .
-      dockerfile: docker/mysql/dev.dockerfile
-    networks:
-      - default
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: MainUser
-      MYSQL_PASSWORD: MainPassword
-networks:
-  default:
