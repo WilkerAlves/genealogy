@@ -1,21 +1,30 @@
 # Genealogy
 
-- Install
+- Instalação
     * Git
     * Go
     * Docker
     * docker-compose
-- Usage:
+
+## Utilização:
 
 ```bash
     git clone https://github.com/pedrocmart/crud-go
 
     cd genealogy
-
+```
+- Renomear o arquivo `.env.exemplo` para `.env` e preencher as chaves com as seguintes informações:
+  - DB_HOST=localhost
+  - DB_PORT=3307
+  - DB_NAME=MainUser
+  - DB_USER=MainPassword
+  - DB_PASS=genealogy
+  - SERVER_PORT=8080
+```bash
     docker-compose up
 ```
 
-## Api endpoints:
+## Rotas disponiveis:
 
 - http://localhost:8080/persons/{personID}
   - Esse endpoint busca uma pessoa usando como parametro o id da mesma
