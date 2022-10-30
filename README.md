@@ -51,3 +51,29 @@
 - http://localhost:8080/relationship/4
   - Esse endpoint busca a arvore genealogia de uma pessoa usando como parametro os id da mesma
   - GET
+
+## Banco de dados:
+- O Banco de dados é criado no momento em que o container é criado
+- Esse banco ja vem com as tabelas definidas e popoulado com alguns dados
+- Abaixo a lista das pessoas ja cadastradas com o id e nome respectivamente: 
+  - 1,Bruce
+  - 2,Mike
+  - 3,Sonny
+  - 4,Phoebe
+  - 5,Anastasia
+  - 6,Martin
+  - 7,Dunny
+  - 8,Ursula
+  - 9,Jacqueline
+- Tambem já está criado algumas relações. Abaixo uma lista das relações criadas sendo id parent e o id do children respectivamente:
+  - 2,1
+  - 2,7
+  - 3,2
+  - 4,1
+  - 4,7
+  - 5,4
+  - 5,8
+  - 6,4
+  - 6,8
+  - 8,9
+
