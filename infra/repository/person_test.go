@@ -2,28 +2,14 @@ package repository_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"os"
-	"path"
 	"testing"
 
 	"github.com/WilkerAlves/genealogy/infra/repository"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
-func init() {
-	rootPath := os.Getenv("ROOT_PATH")
-	err := godotenv.Load(path.Join(rootPath, ".env"))
-	if err != nil {
-		panic(errors.New("error while load env"))
-	}
-}
-
 func TestPersonRepositoryAdd(t *testing.T) {
-	conn := os.Getenv("CONNECTION_STRING_DB")
-
 	r, err := repository.NewPersonRepository(conn)
 	assert.Nil(t, err)
 
@@ -35,7 +21,6 @@ func TestPersonRepositoryAdd(t *testing.T) {
 }
 
 func TestPersonRepositoryGet(t *testing.T) {
-	conn := os.Getenv("CONNECTION_STRING_DB")
 	ctx := context.Background()
 	r, err := repository.NewPersonRepository(conn)
 	assert.Nil(t, err)
@@ -55,7 +40,6 @@ func TestPersonRepositoryGet(t *testing.T) {
 }
 
 func TestPersonRepositoryUpdate(t *testing.T) {
-	conn := os.Getenv("CONNECTION_STRING_DB")
 	ctx := context.Background()
 	name := "NOME ATUALIZADO"
 	r, err := repository.NewPersonRepository(conn)
@@ -80,7 +64,6 @@ func TestPersonRepositoryUpdate(t *testing.T) {
 }
 
 func TestPersonRepositoryDelete(t *testing.T) {
-	conn := os.Getenv("CONNECTION_STRING_DB")
 	ctx := context.Background()
 	r, err := repository.NewPersonRepository(conn)
 	assert.Nil(t, err)

@@ -14,22 +14,22 @@ services:
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
 
-  genealogy-go:
-    container_name: genealogy_go
-    build:
-      context: .
-      dockerfile: docker/go/dev.dockerfile
-    ports:
-      - "8080:8080"
-    depends_on:
-      - genealogy-db
-    links:
-      - genealogy-db
-    environment:
-      DB_HOST: genealogy-db
-      DB_PORT: 3306
-      DB_NAME: genealogy
-      DB_USER: MainUser
-      DB_PASS: MainPassword
-    volumes:
-      - ".:/application"
+#  genealogy-go:
+#    container_name: genealogy_go
+#    build:
+#      context: .
+#      dockerfile: docker/go/dev.dockerfile
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - genealogy-db
+#    links:
+#      - genealogy-db
+#    environment:
+#      DB_HOST: genealogy-db
+#      DB_PORT: 3306
+#      DB_NAME: genealogy
+#      DB_USER: MainUser
+#      DB_PASS: MainPassword
+#    volumes:
+#      - ".:/application"

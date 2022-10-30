@@ -1,22 +1,19 @@
-package person_test
+package relationship_test
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"os"
 	"path"
 
-	"github.com/WilkerAlves/genealogy/domain/entity"
-	repoDomain "github.com/WilkerAlves/genealogy/domain/repository"
+	domainRepo "github.com/WilkerAlves/genealogy/domain/repository"
 	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/joho/godotenv"
 )
 
 var (
-	personRepository repoDomain.PersonRepository
-	nameNewUser      = "Test"
-	conn             string
+	relationshipRepository domainRepo.RelationshipRepository
+	conn                   string
 )
 
 func init() {
@@ -27,7 +24,7 @@ func init() {
 	}
 
 	conn = getConnectionString()
-	personRepository, err = repository.NewPersonRepository(conn)
+	relationshipRepository, err = repository.NewRelationshipRepository(conn)
 	if err != nil {
 		panic(errors.New("error while create repository"))
 	}
@@ -44,13 +41,4 @@ func getConnectionString() string {
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		user, password, host, port, dbName,
 	)
-}
-
-func creteUsers(ctx context.Context, name string) (*entity.Person, error) {
-	add, err := personRepository.Add(ctx, name)
-	if err != nil {
-		return nil, err
-	}
-
-	return add, nil
 }

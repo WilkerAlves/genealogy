@@ -2,29 +2,12 @@ package person_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"os"
-	"path"
 	"testing"
 
 	"github.com/WilkerAlves/genealogy/application/person"
-	"github.com/WilkerAlves/genealogy/infra/repository"
-	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
-
-func init() {
-	rootPath := os.Getenv("ROOT_PATH")
-	err := godotenv.Load(path.Join(rootPath, ".env"))
-	if err != nil {
-		panic(errors.New("error while load env"))
-	}
-	personRepository, err = repository.NewPersonRepository(os.Getenv("CONNECTION_STRING_DB"))
-	if err != nil {
-		panic(errors.New("error create repository"))
-	}
-}
 
 func TestDeletePerson(t *testing.T) {
 	ctx := context.Background()

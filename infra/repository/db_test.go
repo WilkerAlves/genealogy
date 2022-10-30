@@ -20,7 +20,7 @@ func init() {
 }
 
 func TestConfigureDb(t *testing.T) {
-	conn := os.Getenv("CONNECTION_STRING_DB")
+	conn = getConnectionString()
 	db, err := repository.ConfigureDb(conn)
 	if err != nil {
 		return

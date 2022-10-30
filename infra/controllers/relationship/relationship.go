@@ -7,16 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//var repo *repository.RelationshipRepository
-
-//func init() {
-//	var err error
-//	repo, err = repository.NewRelationshipRepository(os.Getenv("CONNECTION_STRING_DB"))
-//	if err != nil {
-//		log.Fatal().Err(err).Msg("error for create relationship repository")
-//	}
-//}
-
 type Controller struct {
 	repo *repository.RelationshipRepository
 }
