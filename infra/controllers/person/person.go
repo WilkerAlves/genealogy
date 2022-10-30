@@ -3,147 +3,118 @@ package person
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"strconv"
 
+	"github.com/WilkerAlves/genealogy/infra/controllers"
 	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/WilkerAlves/genealogy/use_case/person"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 )
 
-var repo *repository.PersonRepository
-
-func init() {
-	var err error
-	repo, err = repository.NewPersonRepository(os.Getenv("CONNECTION_STRING_DB"))
-	if err != nil {
-		log.Fatal().Err(err).Msg("error for create person repository")
-	}
+type Controller struct {
+	repo *repository.PersonRepository
 }
 
-func Create(c *gin.Context) {
+func (ctrl *Controller) Create(c *gin.Context) {
 	var body CreateOrUpdatePerson
 	if err := c.BindJSON(&body); err != nil {
-		msg := fmt.Errorf("error while parser json: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "error while parser json", err)
+		return
 	}
 
-	uc := person.NewCreatePersonUseCase(repo)
+	uc := person.NewCreatePersonUseCase(ctrl.repo)
 	p, err := uc.Execute(c.Request.Context(), body.Name)
 	if err != nil {
-		msg := fmt.Errorf("error for create person: %w", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseInternalServerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":   p.ID,
-		"name": p.Name,
-	})
+	controllers.ResponseSuccess(c, p)
 }
 
-func FindById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (ctrl *Controller) FindById(c *gin.Context) {
+	id, err := controllers.ValidateId(c.Param("id"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	uc := person.NewFindPersonByIdUseCase(repo)
+	uc := person.NewFindPersonByIdUseCase(ctrl.repo)
 	p, err := uc.Execute(c.Request.Context(), id)
 	if err != nil {
 		notFoundMsg := fmt.Sprintf("person %d not found", id)
 		if err.Error() == notFoundMsg {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": notFoundMsg,
-			})
+			controllers.ResponseNotFound(c, notFoundMsg)
 			return
 		}
 
+		controllers.ResponseInternalServerError(c, err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"id":   p.ID,
-		"name": p.Name,
-	})
+	controllers.ResponseSuccess(c, p)
 }
 
-func Update(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (ctrl *Controller) Update(c *gin.Context) {
+	id, err := controllers.ValidateId(c.Param("id"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
 	var body CreateOrUpdatePerson
 	if err := c.BindJSON(&body); err != nil {
-		msg := fmt.Errorf("error while parser json: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "error while parser json", err)
 		return
 	}
 
-	uc := person.NewUpdatePersonUseCase(repo)
+	uc := person.NewUpdatePersonUseCase(ctrl.repo)
 	err = uc.Execute(c.Request.Context(), id, body.Name)
 	if err != nil {
 		notFoundMsg := fmt.Sprintf("person %d not found", id)
 		if err.Error() == notFoundMsg {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": notFoundMsg,
-			})
+			controllers.ResponseNotFound(c, notFoundMsg)
 			return
 		}
 
+		controllers.ResponseInternalServerError(c, err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	controllers.ResponseSuccess(c, nil)
 }
 
-func Delete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (ctrl *Controller) Delete(c *gin.Context) {
+	id, err := controllers.ValidateId(c.Param("id"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	uc := person.NewDeletePersonUseCase(repo)
+	uc := person.NewDeletePersonUseCase(ctrl.repo)
 	err = uc.Execute(c.Request.Context(), id)
 	if err != nil {
 		notFoundMsg := fmt.Sprintf("person %d not found", id)
 		if err.Error() == notFoundMsg {
-			c.JSON(http.StatusNotFound, gin.H{
-				"message": notFoundMsg,
-			})
+			controllers.ResponseNotFound(c, notFoundMsg)
 			return
 		}
 
+		controllers.ResponseInternalServerError(c, err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
-	c.JSON(http.StatusOK, nil)
+
+	controllers.ResponseSuccess(c, nil)
+}
+
+func NewController(repo *repository.PersonRepository) *Controller {
+	return &Controller{repo: repo}
 }

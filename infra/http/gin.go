@@ -11,6 +11,7 @@ import (
 
 	"github.com/WilkerAlves/genealogy/infra/controllers/person"
 	"github.com/WilkerAlves/genealogy/infra/controllers/relationship"
+	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
@@ -24,7 +25,6 @@ func StartServer(ctx context.Context) {
 		`{"error": "timeout"}`,
 	)
 
-	// criando um servidor http customizado
 	srv := &http.Server{
 		Addr:        fmt.Sprintf(":%s", os.Getenv("SERVER_PORT")),
 		ReadTimeout: 30 * time.Second,
@@ -49,16 +49,30 @@ func configureRoutes() *gin.Engine {
 		})
 	})
 
+	conn := os.Getenv("CONNECTION_STRING_DB")
+
+	personRepository, err := repository.NewPersonRepository(conn)
+	if err != nil {
+		log.Fatal().Err(err).Msg("error for create person repository")
+	}
+	personController := person.NewController(personRepository)
+
 	routerGroup := router.Group("/persons")
-	routerGroup.GET("/:id", person.FindById)
-	routerGroup.POST("/", person.Create)
-	routerGroup.PUT("/:id", person.Update)
-	routerGroup.DELETE("/:id", person.Delete)
+	routerGroup.GET("/:id", personController.FindById)
+	routerGroup.POST("/", personController.Create)
+	routerGroup.PUT("/:id", personController.Update)
+	routerGroup.DELETE("/:id", personController.Delete)
+
+	relationshipRepository, err := repository.NewRelationshipRepository(conn)
+	if err != nil {
+		log.Fatal().Err(err).Msg("error for create relationship repository")
+	}
+	relationshipController := relationship.NewController(relationshipRepository)
 
 	relationshipGroup := router.Group("/relationship")
-	relationshipGroup.GET("/:id", relationship.Genealogy)
-	relationshipGroup.POST("/", relationship.Add)
-	relationshipGroup.GET("/find", relationship.Find)
+	relationshipGroup.GET("/:id", relationshipController.Genealogy)
+	relationshipGroup.POST("/", relationshipController.Add)
+	relationshipGroup.GET("/find", relationshipController.Find)
 
 	return router
 }

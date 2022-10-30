@@ -1,37 +1,36 @@
 package relationship
 
 import (
-	"fmt"
-	"net/http"
-	"os"
 	"strconv"
 
+	"github.com/WilkerAlves/genealogy/infra/controllers"
 	"github.com/WilkerAlves/genealogy/infra/repository"
 	"github.com/WilkerAlves/genealogy/use_case/relationship"
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
 )
 
-var repo *repository.RelationshipRepository
+//var repo *repository.RelationshipRepository
 
-func init() {
-	var err error
-	repo, err = repository.NewRelationshipRepository(os.Getenv("CONNECTION_STRING_DB"))
-	if err != nil {
-		log.Fatal().Err(err).Msg("error for create relationship repository")
-	}
+//func init() {
+//	var err error
+//	repo, err = repository.NewRelationshipRepository(os.Getenv("CONNECTION_STRING_DB"))
+//	if err != nil {
+//		log.Fatal().Err(err).Msg("error for create relationship repository")
+//	}
+//}
+
+type Controller struct {
+	repo *repository.RelationshipRepository
 }
 
-func Add(c *gin.Context) {
+func (ctrl *Controller) Add(c *gin.Context) {
 	var body CreateRelationship
 	if err := c.BindJSON(&body); err != nil {
-		msg := fmt.Errorf("error while parser json: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "error while parser json", err)
+		return
 	}
 
-	uc := relationship.NewAddUseCase(repo)
+	uc := relationship.NewAddUseCase(ctrl.repo)
 
 	input := relationship.InputRelationship{
 		Parent:   body.Parent,
@@ -40,69 +39,53 @@ func Add(c *gin.Context) {
 
 	err := uc.Execute(c.Request.Context(), input)
 	if err != nil {
-		msg := fmt.Errorf("error for create relationship: %w", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseInternalServerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, nil)
+	controllers.ResponseSuccess(c, nil)
 }
 
-func Genealogy(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (ctrl *Controller) Genealogy(c *gin.Context) {
+	id, err := controllers.ValidateId(c.Param("id"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	uc := relationship.NewFindUseCase(repo)
+	uc := relationship.NewFindUseCase(ctrl.repo)
 	result, err := uc.Execute(c.Request.Context(), id)
 	if err != nil {
-		msg := fmt.Errorf("error while get genealogy: %w", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseInternalServerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, result)
+	controllers.ResponseSuccess(c, result)
 }
 
-func Find(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+func (ctrl *Controller) Find(c *gin.Context) {
+	id, err := controllers.ValidateId(c.Param("id"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	findrelationship, err := strconv.Atoi(c.Query("findrelationship"))
+	findRelationship, err := strconv.Atoi(c.Query("findrelationship"))
 	if err != nil {
-		msg := fmt.Errorf("invalid id: %w", err)
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseBadRequest(c, "", err)
 		return
 	}
 
-	uc := relationship.NewGetUseCase(repo)
-	result, err := uc.Execute(c.Request.Context(), id, findrelationship)
+	uc := relationship.NewGetUseCase(ctrl.repo)
+	result, err := uc.Execute(c.Request.Context(), id, findRelationship)
 	if err != nil {
-		msg := fmt.Errorf("error while get genealogy: %w", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": msg.Error(),
-		})
+		controllers.ResponseInternalServerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"result": result,
-	})
+	controllers.ResponseSuccess(c, result)
+}
+
+func NewController(repo *repository.RelationshipRepository) *Controller {
+	return &Controller{repo: repo}
 }
