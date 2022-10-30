@@ -19,37 +19,37 @@ func (uc *GetUseCase) Execute(ctx context.Context, idCompare1, idCompare2 int) (
 
 	for i := range family1.Parents {
 		if family1.Parents[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is children this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is children this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
 	for i := range family1.Children {
 		if family1.Children[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is parents this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is parents this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
 	for i := range family1.Brothers {
 		if family1.Brothers[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is brothers this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is brothers this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
 	for i := range family1.Grandparents {
 		if family1.Grandparents[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is grandparents this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is grandparents this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
 	for i := range family1.Uncles {
 		if family1.Uncles[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is nephews this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is nephews this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
 	for i := range family1.Nephews {
 		if family1.Nephews[i].ID == idCompare2 {
-			return fmt.Sprintf("this id: %d is uncles this id: %d", family1.Parents[i].ID, idCompare2), nil
+			return fmt.Sprintf("this id: %d is uncles this id: %d", idCompare1, idCompare2), nil
 		}
 	}
 
