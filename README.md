@@ -9,7 +9,7 @@
 ## Utilização:
 
 ```bash
-    git clone https://github.com/pedrocmart/crud-go
+    git clone https://github.com/WilkerAlves/genealogy.git
 
     cd genealogy
 ```
